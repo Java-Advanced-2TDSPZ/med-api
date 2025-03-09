@@ -2,13 +2,13 @@ package br.com.fiap.med_api.model;
 
 import java.util.Random;
 
-public class Category {
+public class Appointment {
     private Long id;
     private String name;
     private String icon;
 
 
-    public Category(Long id, String name, String icon) {
+    public Appointment(Long id, String name, String icon) {
         this.id = (id == null) ? new Random().nextLong() : id;
         this.name = name;
         this.icon = icon;
