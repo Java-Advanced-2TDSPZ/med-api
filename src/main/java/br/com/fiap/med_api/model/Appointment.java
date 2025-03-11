@@ -9,7 +9,7 @@ public class Appointment {
 
 
     public Appointment(Long id, String name, String icon) {
-        this.id = (id == null) ? new Random().nextLong() : id;
+        this.id = (id == null) ? Math.abs(new Random().nextLong()) : id;
         this.name = name;
         this.icon = icon;
     }
@@ -27,6 +27,16 @@ public class Appointment {
 
     public String getIcon() {
         return icon;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Appointment [id=" + id + ", name=" + name + ", icon=" + icon + "]";
     }
     
     

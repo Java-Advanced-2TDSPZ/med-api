@@ -3,21 +3,30 @@ package br.com.fiap.med_api.controller;
 import java.util.ArrayList;
 import java.util.List;
 import br.com.fiap.med_api.model.Appointment;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController //component
 
 public class AppointmentController {
 
+   private Logger log = LoggerFactory.getLogger(getClass());
+
    private List<Appointment> repository = new ArrayList<>();
 
     //Listar todos os agendamentos
-    //GET :8080/categories -> 200 ok -> JSON
     @GetMapping("/appointments")
     public List<Appointment> index() {
        return repository;
@@ -25,29 +34,46 @@ public class AppointmentController {
 
     //Cadastrar um agendamento
     @PostMapping("/appointments")
-    //@ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<Appointment> create(@RequestBody Appointment appointment){
-        System.out.println("Cadastrando..." + appointment.getName());
+        log.info("Cadastrando..." + appointment.getName());
         repository.add(appointment);
         return ResponseEntity.status(201).body(appointment);
     }
 
     //Detalhes do agendamento
     @GetMapping("/appointments/{id}")
-    public ResponseEntity<Appointment> get(@PathVariable Long id){
-        System.out.println("Buscando agendamento " + id);
-        var appointment = repository
-            .stream()
-            .filter(c -> c.getId().equals(id))
-            .findFirst();
-
-        if (appointment.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(appointment.get());
+    public Appointment get(@PathVariable Long id){
+        log.info("Buscando agendamento " + id);
+        return getAppointment(id);
     }
 
-    //Apagar uma categoria
+    //Apagar um agendamento
+    @DeleteMapping("/appointments/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void destroy(@PathVariable Long id){
+        log.info("Apagando agendamento " + id);
+        repository.remove(getAppointment(id));
+
+    }
+
+    //Editar um agendamento
+    @PutMapping("/appointments/{id}")
+    public Appointment update(@PathVariable Long id, @RequestBody Appointment appointment){
+        log.info("Atualizando agendamento " + id + " " + appointment);  
+        repository.remove(getAppointment(id));
+        appointment.setId(id);
+        repository.add(appointment);
+        return appointment;
+    }
+
+    private Appointment getAppointment(Long id) {
+        return repository
+            .stream()
+            .filter(c -> c.getId().equals(id))
+            .findFirst()
+            .orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+            );
+    }
     
 }
