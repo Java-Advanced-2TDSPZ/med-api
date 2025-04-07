@@ -2,6 +2,8 @@ package br.com.fiap.med_api.model;
 
 
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,6 +17,6 @@ public class Appointment {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String icon;
+    private LocalDate date;
 
 }
