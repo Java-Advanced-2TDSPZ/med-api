@@ -2,6 +2,8 @@ package br.com.fiap.med_api.controller;
 import java.util.List;
 import br.com.fiap.med_api.model.Appointment;
 import br.com.fiap.med_api.repository.AppointmentRepository;
+import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,7 @@ public class AppointmentController {
 
     //Cadastrar um agendamento
     @PostMapping
-    public ResponseEntity<Appointment> create(@RequestBody Appointment appointment){
+    public ResponseEntity<Appointment> create(@RequestBody @Valid Appointment appointment){
         log.info("Cadastrando..." + appointment.getName());
         repository.save(appointment);
         return ResponseEntity.status(201).body(appointment);
@@ -62,7 +64,7 @@ public class AppointmentController {
 
     //Editar um agendamento
     @PutMapping("{id}")
-    public Appointment update(@PathVariable Long id, @RequestBody Appointment appointment){
+    public Appointment update(@PathVariable Long id, @RequestBody @Valid Appointment appointment){
         log.info("Atualizando agendamento " + id + " " + appointment);  
         getAppointment(id);
         appointment.setId(id);
